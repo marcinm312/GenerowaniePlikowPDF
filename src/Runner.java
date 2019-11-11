@@ -50,9 +50,9 @@ public class Runner {
 		System.out.println("metadata - metadane dokumentu PDF");
 		System.out.println("invoice - faktura w dokumencie PDF");
 		System.out.println("graphics - grafika w dokumencie PDF");
-		System.out.println("saveTo1PDF - zapis obecnych dokument體 do 1 pliku pdf");
-		System.out.println("savemanyPDF - zapis obecnych dokument體 do osobnych plik體 PDF");
-		System.out.println("saveTXT - zapis obecnych dokument體 do osobnych plik體 txt");
+		System.out.println("saveTo1PDF - zapis obecnych dokument贸w do 1 pliku pdf");
+		System.out.println("savemanyPDF - zapis obecnych dokument贸w do osobnych plik贸w PDF");
+		System.out.println("saveTXT - zapis obecnych dokument贸w do osobnych plik贸w txt");
 
 		while (true) {
 			try {
