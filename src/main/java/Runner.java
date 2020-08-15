@@ -114,7 +114,7 @@ public class Runner {
     }
 
     private static void save(ArrayList<Dokument> lista) throws IOException {
-        File file = new File("dokumenty.txt");
+        File file = new File("files/dokumenty.txt");
         FileWriter fwriter = new FileWriter(file);
         BufferedWriter bwriter = new BufferedWriter(fwriter);
         for (Dokument dokument : lista) {
@@ -127,7 +127,7 @@ public class Runner {
     }
 
     private static void load(ArrayList<Dokument> lista) throws IOException {
-        File file = new File("dokumenty.txt");
+        File file = new File("files/dokumenty.txt");
         FileReader freader = new FileReader(file);
         BufferedReader breader = new BufferedReader(freader);
         lista.clear();
@@ -151,12 +151,12 @@ public class Runner {
         Double z = x + y + w;
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("Faktura.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("files/Faktura.pdf"));
             document.open();
             // create content
             Phrase fTitle = new Phrase("Faktura nr 1234/IOZ/2009",
                     FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, Color.RED));
-            Image logo = Image.getInstance("src/logo_placeholder.gif");
+            Image logo = Image.getInstance("logo_placeholder.gif");
             Phrase fBuyer = new Phrase("Kupiec sp. z o.o.\nJan Kowalski\nul. Miodna 33\n12-345 Gdziekolwiek",
                     FontFactory.getFont(FontFactory.HELVETICA, 14, Font.NORMAL, Color.BLACK));
             PdfPTable fTable = new PdfPTable(3);
@@ -214,7 +214,7 @@ public class Runner {
     private static void pdfSample() {
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("HelloWorld1.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("files/HelloWorld1.pdf"));
             document.open();
             document.add(new Paragraph("Hello World"));
             document.close();
@@ -227,7 +227,7 @@ public class Runner {
 
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("WszystkieDokumenty.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("files/WszystkieDokumenty.pdf"));
             document.open();
             for (Dokument dokument : lista) {
                 document.addTitle(dokument.getTytul());
@@ -244,7 +244,7 @@ public class Runner {
 
     private static void saveMeToTxt(Dokument dokument, int i) throws IOException {
 
-        File file1 = new File(+i + "_" + dokument.getTytul() + ".txt");
+        File file1 = new File("files/" + i + "_" + dokument.getTytul() + ".txt");
         FileWriter fwriter = new FileWriter(file1);
         BufferedWriter bwriter = new BufferedWriter(fwriter);
 
@@ -274,7 +274,7 @@ public class Runner {
     private static void saveMeToPdf(Dokument dokument, int i) throws IOException, DocumentException {
 
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream(+i + "_" + dokument.getTytul() + ".pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream("files/" + i + "_" + dokument.getTytul() + ".pdf"));
         document.open();
         document.addTitle(dokument.getTytul());
         document.add(new Paragraph("Dokument\n"));
@@ -288,7 +288,7 @@ public class Runner {
     private static void pdfSizes() {
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("HelloWorld2.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("files/HelloWorld2.pdf"));
             document.open();
             document.add(new Paragraph("The default PageSize is DIN A4."));
             document.setPageSize(PageSize.A3);
@@ -329,7 +329,7 @@ public class Runner {
         try {
 //			Document document = new Document(PageSize.A5);
             Document document = new Document(PageSize.A5, 100f, 100f, 100f, 100f);
-            PdfWriter.getInstance(document, new FileOutputStream("HelloWorld3.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("files/HelloWorld3.pdf"));
             document.open();
             document.add(new Paragraph(
                     "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor auctor ipsum. Ut et nibh. Praesent facilisis quam non est. Donec massa. In accumsan nunc nec metus pharetra dapibus. In nunc. Quisque commodo, elit id fermentum adipiscing, turpis dui ornare tortor, eu interdum metus nulla vitae dolor. Morbi adipiscing, nibh sed luctus feugiat, libero mi mattis sapien, vel tristique nisl metus id lorem. Cras nunc tellus, tempor quis, ultrices sodales, pretium sit amet, est. Donec rhoncus tempus sapien. Aliquam sagittis feugiat arcu. Aenean pulvinar ultricies nunc. Mauris rhoncus, pede ac dapibus ornare, augue ipsum varius ipsum, ut ornare tellus erat quis est. Aliquam metus tellus, vestibulum quis, porta non, aliquam ut, pede. Phasellus lobortis nulla eget sem. Aliquam bibendum lectus non orci."));
@@ -342,7 +342,7 @@ public class Runner {
     private static void pdfMetadata() {
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("HelloWorld4.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("files/HelloWorld4.pdf"));
             document.open();
             document.addTitle("Hello World example with metadata");
             document.addAuthor("Marcin Michalczyk");
@@ -359,7 +359,7 @@ public class Runner {
     private static void pdfGraphics() {
         try {
             Document document = new Document();
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("Graphics.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("files/Graphics.pdf"));
             document.open();
 
             // we create a fontMapper and read all the fonts in the font directory
