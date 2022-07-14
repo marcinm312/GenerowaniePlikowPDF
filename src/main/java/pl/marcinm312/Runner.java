@@ -1,3 +1,5 @@
+package pl.marcinm312;
+
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -6,12 +8,14 @@ import java.awt.geom.Ellipse2D;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -33,26 +37,27 @@ import com.lowagie.text.pdf.PdfWriter;
 public class Runner {
 
     public static void main(String[] args) throws DocumentException {
-        ArrayList<Dokument> lista = new ArrayList<>();
+
+        List<SimpleDocument> listOfDocuments = new ArrayList<>();
         BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         String tmp;
 
         System.out.println();
         System.out.println("What do you want to do?");
-        System.out.println("create - utworz dokument");
-        System.out.println("show - wyswietl dokumenty");
+        System.out.println("create - utwórz dokument");
+        System.out.println("show - wyświetl dokumenty");
         System.out.println("save - zapis do pliku tekstowego");
         System.out.println("load - odczyt z pliku tekstowego");
-        System.out.println("exit - wyjscie z aplikacji");
-        System.out.println("sample - przyklad dokumentu PDF");
+        System.out.println("exit - wyjście z aplikacji");
+        System.out.println("sample - przykład dokumentu PDF");
         System.out.println("sizes - rozmiary dokumentu PDF");
         System.out.println("margins - marginesy dokumentu PDF");
         System.out.println("metadata - metadane dokumentu PDF");
         System.out.println("invoice - faktura w dokumencie PDF");
         System.out.println("graphics - grafika w dokumencie PDF");
-        System.out.println("saveTo1PDF - zapis obecnych dokumentów do 1 pliku pdf");
-        System.out.println("savemanyPDF - zapis obecnych dokumentów do osobnych plików PDF");
-        System.out.println("saveTXT - zapis obecnych dokumentów do osobnych plików txt");
+        System.out.println("saveToOnePdf - zapis obecnych dokumentów do 1 pliku pdf");
+        System.out.println("saveToManyPdf - zapis obecnych dokumentów do osobnych plików PDF");
+        System.out.println("saveTxt - zapis obecnych dokumentów do osobnych plików txt");
 
         while (true) {
             try {
@@ -61,33 +66,33 @@ public class Runner {
 
                 // act accordingly
                 if (tmp.equals("create"))
-                    create(lista, input);
+                    createDocument(listOfDocuments, input);
                 if (tmp.equals("show"))
-                    show(lista);
+                    showDocuments(listOfDocuments);
                 if (tmp.equals("save"))
-                    save(lista);
+                    saveDocumentsToTextFile(listOfDocuments);
                 if (tmp.equals("load"))
-                    load(lista);
+                    loadDocumentsFromTextFile(listOfDocuments);
                 if (tmp.equals("exit"))
                     break;
                 if (tmp.equals("sample"))
-                    pdfSample();
+                    createSamplePdfFile();
                 if (tmp.equals("sizes"))
-                    pdfSizes();
+                    createSamplePdfFileWithDifferentPageSizes();
                 if (tmp.equals("margins"))
-                    pdfMargins();
+                    createSamplePdfFileWithSpecifiedMargins();
                 if (tmp.equals("metadata"))
-                    pdfMetadata();
+                    createSamplePdfFileWithAdditionalMetadata();
                 if (tmp.equals("invoice"))
-                    pdfInvoice();
+                    createInvoicePdfFile();
                 if (tmp.equals("graphics"))
-                    pdfGraphics();
-                if (tmp.equals("saveTo1PDF"))
-                    saveTo1PDF(lista);
-                if (tmp.equals("savemanyPDF"))
-                    saveToManyPDFs(lista);
-                if (tmp.equals("saveTXT"))
-                    saveToManyTXTs(lista);
+                    createSamplePdfFileWithGraphics();
+                if (tmp.equals("saveToOnePdf"))
+                    saveDocumentsToOnePdfFile(listOfDocuments);
+                if (tmp.equals("saveToManyPdf"))
+                    saveDocumentsToManyPdfFiles(listOfDocuments);
+                if (tmp.equals("saveTxt"))
+                    saveDocumentsToManyTextFiles(listOfDocuments);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -95,115 +100,120 @@ public class Runner {
         }
     }
 
-    private static void create(ArrayList<Dokument> lista, BufferedReader input) throws IOException {
+    private static void createDocument(List<SimpleDocument> listOfDocuments, BufferedReader input) throws IOException {
+
         System.out.println("Enter title: ");
         String title = input.readLine();
         System.out.println("Enter content: ");
         String content = input.readLine();
-        Dokument mojDokumentTekstowy = new Dokument(title, content);
-        lista.add(mojDokumentTekstowy);
+        SimpleDocument simpleDocument = new SimpleDocument(title, content);
+        listOfDocuments.add(simpleDocument);
         System.out.println("The document has been created and added to the list");
     }
 
-    private static void show(ArrayList<Dokument> lista) {
-        for (Dokument dokument : lista) {
+    private static void showDocuments(List<SimpleDocument> listOfDocuments) {
+
+        for (SimpleDocument simpleDocument : listOfDocuments) {
             System.out.print("Dokument\n");
-            System.out.print(dokument.getTytul() + "\n");
-            System.out.print(dokument.getTresc() + "\n");
+            System.out.print(simpleDocument.getTitle() + "\n");
+            System.out.print(simpleDocument.getContent() + "\n");
         }
     }
 
-    private static void save(ArrayList<Dokument> lista) throws IOException {
+    private static void saveDocumentsToTextFile(List<SimpleDocument> listOfDocuments) throws IOException {
+
         File file = new File("files/dokumenty.txt");
-        FileWriter fwriter = new FileWriter(file);
-        BufferedWriter bwriter = new BufferedWriter(fwriter);
-        for (Dokument dokument : lista) {
-            bwriter.write("Dokument\n");
-            bwriter.write(dokument.getTytul() + "\n");
-            bwriter.write(dokument.getTresc() + "\n");
+        FileWriter fileWriter = new FileWriter(file);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+        for (SimpleDocument simpleDocument : listOfDocuments) {
+            bufferedWriter.write("Dokument\n");
+            bufferedWriter.write(simpleDocument.getTitle() + "\n");
+            bufferedWriter.write(simpleDocument.getContent() + "\n");
         }
-        bwriter.close();
+        bufferedWriter.close();
         System.out.println("Documents have been saved to the file");
     }
 
-    private static void load(ArrayList<Dokument> lista) throws IOException {
+    private static void loadDocumentsFromTextFile(List<SimpleDocument> listOfDocuments) throws IOException {
+
         File file = new File("files/dokumenty.txt");
-        FileReader freader = new FileReader(file);
-        BufferedReader breader = new BufferedReader(freader);
-        lista.clear();
+        FileReader fileReader = new FileReader(file);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        listOfDocuments.clear();
         String line;
-        while ((line = breader.readLine()) != null) {
+        while ((line = bufferedReader.readLine()) != null) {
             if (line.equals("Dokument")) {
-                String tytul = breader.readLine();
-                String tresc = breader.readLine();
-                Dokument mojDokumentTekstowy = new Dokument(tytul, tresc);
-                lista.add(mojDokumentTekstowy);
+                String title = bufferedReader.readLine();
+                String content = bufferedReader.readLine();
+                SimpleDocument simpleDocument = new SimpleDocument(title, content);
+                listOfDocuments.add(simpleDocument);
             }
         }
-        breader.close();
+        bufferedReader.close();
         System.out.println("Documents have been loaded from the file");
     }
 
-    private static void pdfInvoice() {
+    private static void createInvoicePdfFile() {
+
         Double x = 1234.56;
         Double y = 345.88;
         Double w = 550.84;
         Double z = x + y + w;
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("files/Faktura.pdf"));
+            PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/Faktura.pdf")));
             document.open();
             // create content
-            Phrase fTitle = new Phrase("Faktura nr 1234/IOZ/2009",
+            Phrase invoiceNumberPhrase = new Phrase("Faktura nr 1234/IOZ/2009",
                     FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, Color.RED));
-            Image logo = Image.getInstance("logo_placeholder.gif");
-            Phrase fBuyer = new Phrase("Kupiec sp. z o.o.\nJan Kowalski\nul. Miodna 33\n12-345 Gdziekolwiek",
+            Image image = Image.getInstance("logo_placeholder.gif");
+            Phrase invoiceBuyerPhrase = new Phrase("Kupiec sp. z o.o.\nJan Kowalski\nul. Miodna 33\n12-345 Gdziekolwiek",
                     FontFactory.getFont(FontFactory.HELVETICA, 14, Font.NORMAL, Color.BLACK));
-            PdfPTable fTable = new PdfPTable(3);
+            PdfPTable pdfPTable = new PdfPTable(3);
             PdfPCell cell = new PdfPCell(new Paragraph("Pozycje na fakturze",
                     FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL, Color.BLACK)));
             cell.setColspan(3);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             cell.setMinimumHeight(20);
-            fTable.addCell(cell);
-            fTable.addCell("Lorem ipsum dolor sit amet");
-            fTable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
-            fTable.addCell("" + x);
-            fTable.addCell("22%");
-            fTable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-            fTable.addCell("Aliquam euismod est suscipit mauris");
-            fTable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
-            fTable.addCell("" + y);
-            fTable.addCell("7%");
-            fTable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-            fTable.addCell("Aliquam euismod est suscipit mauris");
-            fTable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
-            fTable.addCell("" + w);
-            fTable.addCell("22%");
+            pdfPTable.addCell(cell);
+            pdfPTable.addCell("Lorem ipsum dolor sit amet");
+            pdfPTable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+            pdfPTable.addCell("" + x);
+            pdfPTable.addCell("22%");
+            pdfPTable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+            pdfPTable.addCell("Aliquam euismod est suscipit mauris");
+            pdfPTable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+            pdfPTable.addCell("" + y);
+            pdfPTable.addCell("7%");
+            pdfPTable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+            pdfPTable.addCell("Aliquam euismod est suscipit mauris");
+            pdfPTable.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+            pdfPTable.addCell("" + w);
+            pdfPTable.addCell("22%");
 
-            Paragraph fTotal = new Paragraph(z + "",
+            Paragraph invoiceTotalParagraph = new Paragraph(z + "",
                     FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLDITALIC, Color.BLUE));
-            fTotal.setAlignment(Element.ALIGN_RIGHT);
+            invoiceTotalParagraph.setAlignment(Element.ALIGN_RIGHT);
 
             // put content into the document
-            document.add(fTitle);
+            document.add(invoiceNumberPhrase);
             document.add(Chunk.NEWLINE);
             document.add(Chunk.NEWLINE);
-            document.add(fBuyer);
+            document.add(invoiceBuyerPhrase);
             document.add(Chunk.NEWLINE);
             document.add(Chunk.NEWLINE);
             document.add(Chunk.NEWLINE);
 
-            int[] szerokosci = {400, 75, 75};
-            fTable.setWidths(szerokosci);
-            fTable.setTotalWidth(550);
-            fTable.setLockedWidth(true);
-            document.add(fTable);
+            int[] widths = {400, 75, 75};
+            pdfPTable.setWidths(widths);
+            pdfPTable.setTotalWidth(550);
+            pdfPTable.setLockedWidth(true);
+            document.add(pdfPTable);
 
-            document.add(fTotal);
+            document.add(invoiceTotalParagraph);
 
-            logo.setAbsolutePosition(400, 650);
-            document.add(logo);
+            image.setAbsolutePosition(400, 650);
+            document.add(image);
 
             document.close();
         } catch (Exception e) {
@@ -211,10 +221,11 @@ public class Runner {
         }
     }
 
-    private static void pdfSample() {
+    private static void createSamplePdfFile() {
+
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("files/HelloWorld1.pdf"));
+            PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/HelloWorld1.pdf")));
             document.open();
             document.add(new Paragraph("Hello World"));
             document.close();
@@ -223,17 +234,17 @@ public class Runner {
         }
     }
 
-    private static void saveTo1PDF(ArrayList<Dokument> lista) throws IOException {
+    private static void saveDocumentsToOnePdfFile(List<SimpleDocument> listOfDocuments) throws IOException {
 
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("files/WszystkieDokumenty.pdf"));
+            PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/WszystkieDokumenty.pdf")));
             document.open();
-            for (Dokument dokument : lista) {
-                document.addTitle(dokument.getTytul());
+            for (SimpleDocument simpleDocument : listOfDocuments) {
+                document.addTitle(simpleDocument.getTitle());
                 document.add(new Paragraph("Dokument\n"));
-                document.add(new Paragraph(dokument.getTytul() + "\n"));
-                document.add(new Paragraph(dokument.getTresc() + "\n"));
+                document.add(new Paragraph(simpleDocument.getTitle() + "\n"));
+                document.add(new Paragraph(simpleDocument.getContent() + "\n"));
             }
             document.close();
             System.out.println("Documents have been saved to the file");
@@ -242,53 +253,52 @@ public class Runner {
         }
     }
 
-    private static void saveMeToTxt(Dokument dokument, int i) throws IOException {
+    private static void saveDocumentToTextFile(SimpleDocument simpleDocument, int i) throws IOException {
 
-        File file1 = new File("files/" + i + "_" + dokument.getTytul() + ".txt");
-        FileWriter fwriter = new FileWriter(file1);
-        BufferedWriter bwriter = new BufferedWriter(fwriter);
+        File file1 = new File("files/" + i + "_" + simpleDocument.getTitle() + ".txt");
+        FileWriter fileWriter = new FileWriter(file1);
+        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-        bwriter.write("Dokument\n");
-        bwriter.write(dokument.getTytul() + "\n");
-        bwriter.write(dokument.getTresc() + "\n");
-        bwriter.close();
+        bufferedWriter.write("Dokument\n");
+        bufferedWriter.write(simpleDocument.getTitle() + "\n");
+        bufferedWriter.write(simpleDocument.getContent() + "\n");
+        bufferedWriter.close();
         System.out.println("Document " + i + " have been saved to the file");
-
     }
 
-    private static void saveToManyTXTs(ArrayList<Dokument> lista) throws IOException {
+    private static void saveDocumentsToManyTextFiles(List<SimpleDocument> listOfDocuments) throws IOException {
 
-        for (int i = 0; i < lista.size(); i++) {
-            saveMeToTxt(lista.get(i), i);
+        for (int i = 0; i < listOfDocuments.size(); i++) {
+            saveDocumentToTextFile(listOfDocuments.get(i), i);
         }
 
     }
 
-    private static void saveToManyPDFs(ArrayList<Dokument> lista) throws IOException, DocumentException {
-        for (int i = 0; i < lista.size(); i++) {
-            saveMeToPdf(lista.get(i), i);
-        }
+    private static void saveDocumentsToManyPdfFiles(List<SimpleDocument> listOfDocuments) throws IOException, DocumentException {
 
+        for (int i = 0; i < listOfDocuments.size(); i++) {
+            saveDocumentToPdfFile(listOfDocuments.get(i), i);
+        }
     }
 
-    private static void saveMeToPdf(Dokument dokument, int i) throws IOException, DocumentException {
+    private static void saveDocumentToPdfFile(SimpleDocument simpleDocument, int i) throws IOException, DocumentException {
 
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream("files/" + i + "_" + dokument.getTytul() + ".pdf"));
+        PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/" + i + "_" + simpleDocument.getTitle() + ".pdf")));
         document.open();
-        document.addTitle(dokument.getTytul());
+        document.addTitle(simpleDocument.getTitle());
         document.add(new Paragraph("Dokument\n"));
-        document.add(new Paragraph(dokument.getTytul()));
-        document.add(new Paragraph(dokument.getTresc()));
+        document.add(new Paragraph(simpleDocument.getTitle()));
+        document.add(new Paragraph(simpleDocument.getContent()));
 
         document.close();
-
     }
 
-    private static void pdfSizes() {
+    private static void createSamplePdfFileWithDifferentPageSizes() {
+
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("files/HelloWorld2.pdf"));
+            PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/HelloWorld2.pdf")));
             document.open();
             document.add(new Paragraph("The default PageSize is DIN A4."));
             document.setPageSize(PageSize.A3);
@@ -325,11 +335,11 @@ public class Runner {
         }
     }
 
-    private static void pdfMargins() {
+    private static void createSamplePdfFileWithSpecifiedMargins() {
+
         try {
-//			Document document = new Document(PageSize.A5);
             Document document = new Document(PageSize.A5, 100f, 100f, 100f, 100f);
-            PdfWriter.getInstance(document, new FileOutputStream("files/HelloWorld3.pdf"));
+            PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/HelloWorld3.pdf")));
             document.open();
             document.add(new Paragraph(
                     "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor auctor ipsum. Ut et nibh. Praesent facilisis quam non est. Donec massa. In accumsan nunc nec metus pharetra dapibus. In nunc. Quisque commodo, elit id fermentum adipiscing, turpis dui ornare tortor, eu interdum metus nulla vitae dolor. Morbi adipiscing, nibh sed luctus feugiat, libero mi mattis sapien, vel tristique nisl metus id lorem. Cras nunc tellus, tempor quis, ultrices sodales, pretium sit amet, est. Donec rhoncus tempus sapien. Aliquam sagittis feugiat arcu. Aenean pulvinar ultricies nunc. Mauris rhoncus, pede ac dapibus ornare, augue ipsum varius ipsum, ut ornare tellus erat quis est. Aliquam metus tellus, vestibulum quis, porta non, aliquam ut, pede. Phasellus lobortis nulla eget sem. Aliquam bibendum lectus non orci."));
@@ -339,10 +349,11 @@ public class Runner {
         }
     }
 
-    private static void pdfMetadata() {
+    private static void createSamplePdfFileWithAdditionalMetadata() {
+
         try {
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("files/HelloWorld4.pdf"));
+            PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/HelloWorld4.pdf")));
             document.open();
             document.addTitle("Hello World example with metadata");
             document.addAuthor("Marcin Michalczyk");
@@ -356,10 +367,11 @@ public class Runner {
         }
     }
 
-    private static void pdfGraphics() {
+    private static void createSamplePdfFileWithGraphics() {
+
         try {
             Document document = new Document();
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("files/Graphics.pdf"));
+            PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/Graphics.pdf")));
             document.open();
 
             // we create a fontMapper and read all the fonts in the font directory
@@ -367,55 +379,57 @@ public class Runner {
             FontFactory.registerDirectories();
             mapper.insertDirectory("c:\\windows\\fonts");
 
-            /*
-             * Map map = mapper.getMapper(); for (Iterator i = map.keySet().iterator();
-             * i.hasNext();) { String name = (String) i.next(); System.out.println(name +
-             * ": " + ((DefaultFontMapper.BaseFontParameters) map.get(name)).fontName); }
-             */
-
             // we create a template and a Graphics2D object that corresponds with it
-            int w = 150;
-            int h = 150;
+            float w = 150;
+            float h = 150;
             PdfContentByte cb = writer.getDirectContent();
             PdfTemplate tp = cb.createTemplate(w, h);
             Graphics2D g2 = tp.createGraphics(w, h, mapper);
             tp.setWidth(w);
             tp.setHeight(h);
-            int ew = w / 2;
-            int eh = h / 2;
-            Ellipse2D.Double circle, oval, leaf, stem;
-            Area circ, ov, leaf1, leaf2, st1, st2;
+            double ew = w / 2;
+            double eh = h / 2;
+            Ellipse2D.Double circle;
+			Ellipse2D.Double oval;
+			Ellipse2D.Double leaf;
+			Ellipse2D.Double stem;
+            Area circleArea;
+			Area ovalArea;
+			Area leafArea1;
+			Area leafArea2;
+			Area stemArea1;
+			Area stemArea2;
             circle = new Ellipse2D.Double();
             oval = new Ellipse2D.Double();
             leaf = new Ellipse2D.Double();
             stem = new Ellipse2D.Double();
             g2.setColor(Color.green);
 
-            // Creates the first leaf by filling the intersection of two Area objects
+            // Creates the first leaf by filling the intersection with two Area objects
             // created from an ellipse.
             leaf.setFrame(ew - 16, eh - 29, 15.0, 15.0);
-            leaf1 = new Area(leaf);
+            leafArea1 = new Area(leaf);
             leaf.setFrame(ew - 14, eh - 47, 30.0, 30.0);
-            leaf2 = new Area(leaf);
-            leaf1.intersect(leaf2);
-            g2.fill(leaf1);
+            leafArea2 = new Area(leaf);
+            leafArea1.intersect(leafArea2);
+            g2.fill(leafArea1);
 
             // Creates the second leaf.
             leaf.setFrame(ew + 1, eh - 29, 15.0, 15.0);
-            leaf1 = new Area(leaf);
-            leaf2.intersect(leaf1);
-            g2.fill(leaf2);
+            leafArea1 = new Area(leaf);
+            leafArea2.intersect(leafArea1);
+            g2.fill(leafArea2);
 
             g2.setColor(Color.black);
 
             // Creates the stem by filling the Area resulting from the subtraction of two
             // Area objects created from an ellipse.
             stem.setFrame(ew, eh - 42, 40.0, 40.0);
-            st1 = new Area(stem);
+            stemArea1 = new Area(stem);
             stem.setFrame(ew + 3, eh - 47, 50.0, 50.0);
-            st2 = new Area(stem);
-            st1.subtract(st2);
-            g2.fill(st1);
+            stemArea2 = new Area(stem);
+            stemArea1.subtract(stemArea2);
+            g2.fill(stemArea1);
 
             g2.setColor(Color.yellow);
 
@@ -423,10 +437,10 @@ public class Runner {
             // Area objects created by two different ellipses.
             circle.setFrame(ew - 25, eh, 50.0, 50.0);
             oval.setFrame(ew - 19, eh - 20, 40.0, 70.0);
-            circ = new Area(circle);
-            ov = new Area(oval);
-            circ.add(ov);
-            g2.fill(circ);
+            circleArea = new Area(circle);
+            ovalArea = new Area(oval);
+            circleArea.add(ovalArea);
+            g2.fill(circleArea);
 
             g2.setColor(Color.black);
             java.awt.Font thisFont = new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 18);
@@ -443,5 +457,4 @@ public class Runner {
             e.printStackTrace();
         }
     }
-
 }
