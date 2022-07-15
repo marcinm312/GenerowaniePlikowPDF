@@ -1,9 +1,11 @@
 package pl.marcinm312;
 
-import com.lowagie.text.*;
-import com.lowagie.text.Font;
-import com.lowagie.text.Image;
-import com.lowagie.text.pdf.*;
+import com.itextpdf.awt.DefaultFontMapper;
+import com.itextpdf.awt.PdfGraphics2D;
+import com.itextpdf.text.*;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.*;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -51,13 +53,13 @@ public class FileUtils {
 			document.open();
 			// create content
 			Phrase invoiceNumberPhrase = new Phrase("Faktura nr 1234/IOZ/2009",
-					FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, Color.RED));
-			com.lowagie.text.Image image = Image.getInstance("logo_placeholder.gif");
+					FontFactory.getFont(FontFactory.HELVETICA, 24, Font.BOLD, BaseColor.RED));
+			com.itextpdf.text.Image image = Image.getInstance("logo_placeholder.gif");
 			Phrase invoiceBuyerPhrase = new Phrase("Kupiec sp. z o.o.\nJan Kowalski\nul. Miodna 33\n12-345 Gdziekolwiek",
-					FontFactory.getFont(FontFactory.HELVETICA, 14, Font.NORMAL, Color.BLACK));
+					FontFactory.getFont(FontFactory.HELVETICA, 14, Font.NORMAL, BaseColor.BLACK));
 			PdfPTable pdfPTable = new PdfPTable(3);
 			PdfPCell cell = new PdfPCell(new Paragraph("Pozycje na fakturze",
-					FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL, Color.BLACK)));
+					FontFactory.getFont(FontFactory.HELVETICA, 12, Font.NORMAL, BaseColor.BLACK)));
 			cell.setColspan(3);
 			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 			cell.setMinimumHeight(20);
@@ -78,7 +80,7 @@ public class FileUtils {
 			pdfPTable.addCell("22%");
 
 			Paragraph invoiceTotalParagraph = new Paragraph(z + "",
-					FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLDITALIC, Color.BLUE));
+					FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLDITALIC, BaseColor.BLUE));
 			invoiceTotalParagraph.setAlignment(Element.ALIGN_RIGHT);
 
 			// put content into the document
@@ -292,7 +294,7 @@ public class FileUtils {
 			float h = 150;
 			PdfContentByte cb = writer.getDirectContent();
 			PdfTemplate tp = cb.createTemplate(w, h);
-			Graphics2D g2 = tp.createGraphics(w, h, mapper);
+			Graphics2D g2 = new PdfGraphics2D(cb, w, h, mapper);
 			tp.setWidth(w);
 			tp.setHeight(h);
 			double ew = w / 2;
