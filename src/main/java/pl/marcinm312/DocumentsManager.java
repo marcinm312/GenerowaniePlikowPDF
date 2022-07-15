@@ -4,15 +4,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentsManager {
 
 	private final List<SimpleDocument> listOfDocuments = new ArrayList<>();
-	private static final String FILE_SEPARATOR = FileSystems.getDefault().getSeparator();
-	private static final String FILES_FOLDER = "files";
 
 	public List<SimpleDocument> getListOfDocuments() {
 		return listOfDocuments;
@@ -32,7 +29,7 @@ public class DocumentsManager {
 	public void showDocuments() {
 
 		for (SimpleDocument simpleDocument : listOfDocuments) {
-			System.out.print("Dokument\n");
+			System.out.print(Constants.DOCUMENT_CONSTANT);
 			System.out.print(simpleDocument.getTitle() + "\n");
 			System.out.print(simpleDocument.getContent() + "\n");
 		}
@@ -40,20 +37,22 @@ public class DocumentsManager {
 
 	public void loadDocumentsFromTextFile() throws IOException {
 
-		File file = new File(FILES_FOLDER + FILE_SEPARATOR + "dokumenty.txt");
-		FileReader fileReader = new FileReader(file);
-		BufferedReader bufferedReader = new BufferedReader(fileReader);
-		listOfDocuments.clear();
-		String line;
-		while ((line = bufferedReader.readLine()) != null) {
-			if (line.equals("Dokument")) {
-				String title = bufferedReader.readLine();
-				String content = bufferedReader.readLine();
-				SimpleDocument simpleDocument = new SimpleDocument(title, content);
-				listOfDocuments.add(simpleDocument);
+		File file = new File(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + "dokumenty.txt");
+		try (FileReader fileReader = new FileReader(file);
+			 BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+			listOfDocuments.clear();
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
+				if (line.equals("Dokument")) {
+					String title = bufferedReader.readLine();
+					String content = bufferedReader.readLine();
+					SimpleDocument simpleDocument = new SimpleDocument(title, content);
+					listOfDocuments.add(simpleDocument);
+				}
 			}
+			System.out.println("Documents have been loaded from the file");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		bufferedReader.close();
-		System.out.println("Documents have been loaded from the file");
 	}
 }

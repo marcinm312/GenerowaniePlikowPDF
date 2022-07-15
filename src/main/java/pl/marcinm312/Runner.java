@@ -4,11 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import com.lowagie.text.DocumentException;
-
 public class Runner {
 
-    public static void main(String[] args) throws DocumentException {
+    public static void main(String[] args) {
 
         DocumentsManager documentsManager = new DocumentsManager();
 

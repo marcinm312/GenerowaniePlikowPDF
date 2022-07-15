@@ -12,15 +12,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
 public class FileUtils {
-
-	private static final String FILE_SEPARATOR = FileSystems.getDefault().getSeparator();
-	private static final String FILES_FOLDER = "files";
 
 	private FileUtils() {
 
@@ -28,16 +24,18 @@ public class FileUtils {
 
 	public static void saveDocumentsToTextFile(List<SimpleDocument> listOfDocuments) throws IOException {
 
-		File file = new File(FILES_FOLDER + FILE_SEPARATOR + "dokumenty.txt");
-		FileWriter fileWriter = new FileWriter(file);
-		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-		for (SimpleDocument simpleDocument : listOfDocuments) {
-			bufferedWriter.write("Dokument\n");
-			bufferedWriter.write(simpleDocument.getTitle() + "\n");
-			bufferedWriter.write(simpleDocument.getContent() + "\n");
+		File file = new File(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + "dokumenty.txt");
+		try (FileWriter fileWriter = new FileWriter(file);
+			 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+			for (SimpleDocument simpleDocument : listOfDocuments) {
+				bufferedWriter.write(Constants.DOCUMENT_CONSTANT);
+				bufferedWriter.write(simpleDocument.getTitle() + "\n");
+				bufferedWriter.write(simpleDocument.getContent() + "\n");
+			}
+			System.out.println("Documents have been saved to the file");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		bufferedWriter.close();
-		System.out.println("Documents have been saved to the file");
 	}
 
 	public static void createInvoicePdfFile() {
@@ -46,9 +44,10 @@ public class FileUtils {
 		Double y = 345.88;
 		Double w = 550.84;
 		Double z = x + y + w;
+
+		Document document = new Document();
 		try {
-			Document document = new Document();
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "Faktura.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + "Faktura.pdf")));
 			document.open();
 			// create content
 			Phrase invoiceNumberPhrase = new Phrase("Faktura nr 1234/IOZ/2009",
@@ -102,89 +101,99 @@ public class FileUtils {
 			image.setAbsolutePosition(400, 650);
 			document.add(image);
 
-			document.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			document.close();
 		}
 	}
 
 	public static void createSamplePdfFile() {
 
+		Document document = new Document();
 		try {
-			Document document = new Document();
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "HelloWorld1.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + "HelloWorld1.pdf")));
 			document.open();
 			document.add(new Paragraph("Hello World"));
-			document.close();
+
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			document.close();
 		}
 	}
 
 	public static void saveDocumentsToOnePdfFile(List<SimpleDocument> listOfDocuments) throws IOException {
 
+		Document document = new Document();
 		try {
-			Document document = new Document();
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "WszystkieDokumenty.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + "WszystkieDokumenty.pdf")));
 			document.open();
 			for (SimpleDocument simpleDocument : listOfDocuments) {
 				document.addTitle(simpleDocument.getTitle());
-				document.add(new Paragraph("Dokument\n"));
+				document.add(new Paragraph(Constants.DOCUMENT_CONSTANT));
 				document.add(new Paragraph(simpleDocument.getTitle() + "\n"));
 				document.add(new Paragraph(simpleDocument.getContent() + "\n"));
 			}
-			document.close();
 			System.out.println("Documents have been saved to the file");
 		} catch (DocumentException e) {
+			e.printStackTrace();
+		} finally {
+			document.close();
+		}
+	}
+
+	private static void saveDocumentToTextFile(SimpleDocument simpleDocument, int i) {
+
+		File file1 = new File(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + i + "_" + simpleDocument.getTitle() + ".txt");
+		try (FileWriter fileWriter = new FileWriter(file1);
+			 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+
+			bufferedWriter.write(Constants.DOCUMENT_CONSTANT);
+			bufferedWriter.write(simpleDocument.getTitle() + "\n");
+			bufferedWriter.write(simpleDocument.getContent() + "\n");
+			System.out.println("Document " + i + " have been saved to the file");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	private static void saveDocumentToTextFile(SimpleDocument simpleDocument, int i) throws IOException {
-
-		File file1 = new File(FILES_FOLDER + FILE_SEPARATOR + i + "_" + simpleDocument.getTitle() + ".txt");
-		FileWriter fileWriter = new FileWriter(file1);
-		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-		bufferedWriter.write("Dokument\n");
-		bufferedWriter.write(simpleDocument.getTitle() + "\n");
-		bufferedWriter.write(simpleDocument.getContent() + "\n");
-		bufferedWriter.close();
-		System.out.println("Document " + i + " have been saved to the file");
-	}
-
-	public static void saveDocumentsToManyTextFiles(List<SimpleDocument> listOfDocuments) throws IOException {
+	public static void saveDocumentsToManyTextFiles(List<SimpleDocument> listOfDocuments) {
 
 		for (int i = 0; i < listOfDocuments.size(); i++) {
 			saveDocumentToTextFile(listOfDocuments.get(i), i);
 		}
 	}
 
-	public static void saveDocumentsToManyPdfFiles(List<SimpleDocument> listOfDocuments) throws IOException, DocumentException {
+	public static void saveDocumentsToManyPdfFiles(List<SimpleDocument> listOfDocuments) {
 
 		for (int i = 0; i < listOfDocuments.size(); i++) {
 			saveDocumentToPdfFile(listOfDocuments.get(i), i);
 		}
 	}
 
-	private static void saveDocumentToPdfFile(SimpleDocument simpleDocument, int i) throws IOException, DocumentException {
+	private static void saveDocumentToPdfFile(SimpleDocument simpleDocument, int i) {
 
 		Document document = new Document();
-		PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + i + "_" + simpleDocument.getTitle() + ".pdf")));
-		document.open();
-		document.addTitle(simpleDocument.getTitle());
-		document.add(new Paragraph("Dokument\n"));
-		document.add(new Paragraph(simpleDocument.getTitle()));
-		document.add(new Paragraph(simpleDocument.getContent()));
-
-		document.close();
+		try {
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + i + "_" + simpleDocument.getTitle() + ".pdf")));
+			document.open();
+			document.addTitle(simpleDocument.getTitle());
+			document.add(new Paragraph(Constants.DOCUMENT_CONSTANT));
+			document.add(new Paragraph(simpleDocument.getTitle()));
+			document.add(new Paragraph(simpleDocument.getContent()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			document.close();
+		}
 	}
 
 	public static void createSamplePdfFileWithDifferentPageSizes() {
 
+		Document document = new Document();
 		try {
-			Document document = new Document();
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "HelloWorld2.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + "HelloWorld2.pdf")));
 			document.open();
 			document.add(new Paragraph("The default PageSize is DIN A4."));
 			document.setPageSize(PageSize.A3);
@@ -215,31 +224,35 @@ public class FileUtils {
 			document.newPage();
 			document.add(new Paragraph("This PageSize is LETTER."));
 			document.add(new Paragraph("A lot of other standard PageSizes are available."));
-			document.close();
+
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			document.close();
 		}
 	}
 
 	public static void createSamplePdfFileWithSpecifiedMargins() {
 
+		Document document = new Document(PageSize.A5, 100f, 100f, 100f, 100f);
 		try {
-			Document document = new Document(PageSize.A5, 100f, 100f, 100f, 100f);
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "HelloWorld3.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + "HelloWorld3.pdf")));
 			document.open();
 			document.add(new Paragraph(
 					"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor auctor ipsum. Ut et nibh. Praesent facilisis quam non est. Donec massa. In accumsan nunc nec metus pharetra dapibus. In nunc. Quisque commodo, elit id fermentum adipiscing, turpis dui ornare tortor, eu interdum metus nulla vitae dolor. Morbi adipiscing, nibh sed luctus feugiat, libero mi mattis sapien, vel tristique nisl metus id lorem. Cras nunc tellus, tempor quis, ultrices sodales, pretium sit amet, est. Donec rhoncus tempus sapien. Aliquam sagittis feugiat arcu. Aenean pulvinar ultricies nunc. Mauris rhoncus, pede ac dapibus ornare, augue ipsum varius ipsum, ut ornare tellus erat quis est. Aliquam metus tellus, vestibulum quis, porta non, aliquam ut, pede. Phasellus lobortis nulla eget sem. Aliquam bibendum lectus non orci."));
-			document.close();
+
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			document.close();
 		}
 	}
 
 	public static void createSamplePdfFileWithAdditionalMetadata() {
 
+		Document document = new Document();
 		try {
-			Document document = new Document();
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "HelloWorld4.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + "HelloWorld4.pdf")));
 			document.open();
 			document.addTitle("Hello World example with metadata");
 			document.addAuthor("Marcin Michalczyk");
@@ -247,9 +260,11 @@ public class FileUtils {
 			document.addKeywords("iText, Hello World, metadata");
 			document.addCreator("My program using iText");
 			document.add(new Paragraph("Hello World with metadata"));
-			document.close();
+
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			document.close();
 		}
 	}
 
@@ -257,9 +272,9 @@ public class FileUtils {
 
 		String windowsOs = "windows";
 
+		Document document = new Document();
 		try {
-			Document document = new Document();
-			PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "Graphics.pdf")));
+			PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + "Graphics.pdf")));
 			document.open();
 
 			String os = System.getProperty("os.name").toLowerCase();
@@ -269,7 +284,7 @@ public class FileUtils {
 			DefaultFontMapper mapper = new DefaultFontMapper();
 			FontFactory.registerDirectories();
 			if (os.startsWith(windowsOs)) {
-				mapper.insertDirectory("c:" + FILE_SEPARATOR + "windows" + FILE_SEPARATOR + "fonts");
+				mapper.insertDirectory("c:" + Constants.FILE_SEPARATOR + "windows" + Constants.FILE_SEPARATOR + "fonts");
 			}
 
 			// we create a template and a Graphics2D object that corresponds with it
@@ -350,9 +365,10 @@ public class FileUtils {
 			g2.dispose();
 			cb.addTemplate(tp, 50, 600);
 
-			document.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			document.close();
 		}
 	}
 }
