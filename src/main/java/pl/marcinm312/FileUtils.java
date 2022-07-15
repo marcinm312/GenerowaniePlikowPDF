@@ -12,11 +12,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
 public class FileUtils {
+
+	private static final String FILE_SEPARATOR = FileSystems.getDefault().getSeparator();
+	private static final String FILES_FOLDER = "files";
 
 	private FileUtils() {
 
@@ -24,7 +28,7 @@ public class FileUtils {
 
 	public static void saveDocumentsToTextFile(List<SimpleDocument> listOfDocuments) throws IOException {
 
-		File file = new File("files/dokumenty.txt");
+		File file = new File(FILES_FOLDER + FILE_SEPARATOR + "dokumenty.txt");
 		FileWriter fileWriter = new FileWriter(file);
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 		for (SimpleDocument simpleDocument : listOfDocuments) {
@@ -44,7 +48,7 @@ public class FileUtils {
 		Double z = x + y + w;
 		try {
 			Document document = new Document();
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/Faktura.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "Faktura.pdf")));
 			document.open();
 			// create content
 			Phrase invoiceNumberPhrase = new Phrase("Faktura nr 1234/IOZ/2009",
@@ -108,7 +112,7 @@ public class FileUtils {
 
 		try {
 			Document document = new Document();
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/HelloWorld1.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "HelloWorld1.pdf")));
 			document.open();
 			document.add(new Paragraph("Hello World"));
 			document.close();
@@ -121,7 +125,7 @@ public class FileUtils {
 
 		try {
 			Document document = new Document();
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/WszystkieDokumenty.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "WszystkieDokumenty.pdf")));
 			document.open();
 			for (SimpleDocument simpleDocument : listOfDocuments) {
 				document.addTitle(simpleDocument.getTitle());
@@ -138,7 +142,7 @@ public class FileUtils {
 
 	private static void saveDocumentToTextFile(SimpleDocument simpleDocument, int i) throws IOException {
 
-		File file1 = new File("files/" + i + "_" + simpleDocument.getTitle() + ".txt");
+		File file1 = new File(FILES_FOLDER + FILE_SEPARATOR + i + "_" + simpleDocument.getTitle() + ".txt");
 		FileWriter fileWriter = new FileWriter(file1);
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
@@ -166,7 +170,7 @@ public class FileUtils {
 	private static void saveDocumentToPdfFile(SimpleDocument simpleDocument, int i) throws IOException, DocumentException {
 
 		Document document = new Document();
-		PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/" + i + "_" + simpleDocument.getTitle() + ".pdf")));
+		PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + i + "_" + simpleDocument.getTitle() + ".pdf")));
 		document.open();
 		document.addTitle(simpleDocument.getTitle());
 		document.add(new Paragraph("Dokument\n"));
@@ -180,7 +184,7 @@ public class FileUtils {
 
 		try {
 			Document document = new Document();
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/HelloWorld2.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "HelloWorld2.pdf")));
 			document.open();
 			document.add(new Paragraph("The default PageSize is DIN A4."));
 			document.setPageSize(PageSize.A3);
@@ -221,7 +225,7 @@ public class FileUtils {
 
 		try {
 			Document document = new Document(PageSize.A5, 100f, 100f, 100f, 100f);
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/HelloWorld3.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "HelloWorld3.pdf")));
 			document.open();
 			document.add(new Paragraph(
 					"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor auctor ipsum. Ut et nibh. Praesent facilisis quam non est. Donec massa. In accumsan nunc nec metus pharetra dapibus. In nunc. Quisque commodo, elit id fermentum adipiscing, turpis dui ornare tortor, eu interdum metus nulla vitae dolor. Morbi adipiscing, nibh sed luctus feugiat, libero mi mattis sapien, vel tristique nisl metus id lorem. Cras nunc tellus, tempor quis, ultrices sodales, pretium sit amet, est. Donec rhoncus tempus sapien. Aliquam sagittis feugiat arcu. Aenean pulvinar ultricies nunc. Mauris rhoncus, pede ac dapibus ornare, augue ipsum varius ipsum, ut ornare tellus erat quis est. Aliquam metus tellus, vestibulum quis, porta non, aliquam ut, pede. Phasellus lobortis nulla eget sem. Aliquam bibendum lectus non orci."));
@@ -235,7 +239,7 @@ public class FileUtils {
 
 		try {
 			Document document = new Document();
-			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/HelloWorld4.pdf")));
+			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "HelloWorld4.pdf")));
 			document.open();
 			document.addTitle("Hello World example with metadata");
 			document.addAuthor("Marcin Michalczyk");
@@ -253,13 +257,13 @@ public class FileUtils {
 
 		try {
 			Document document = new Document();
-			PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get("files/Graphics.pdf")));
+			PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "Graphics.pdf")));
 			document.open();
 
 			// we create a fontMapper and read all the fonts in the font directory
 			DefaultFontMapper mapper = new DefaultFontMapper();
 			FontFactory.registerDirectories();
-			mapper.insertDirectory("c:\\windows\\fonts");
+			mapper.insertDirectory("c:" + FILE_SEPARATOR + "windows" + FILE_SEPARATOR + "fonts");
 
 			// we create a template and a Graphics2D object that corresponds with it
 			float w = 150;

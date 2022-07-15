@@ -4,12 +4,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DocumentsManager {
 
 	private final List<SimpleDocument> listOfDocuments = new ArrayList<>();
+	private static final String FILE_SEPARATOR = FileSystems.getDefault().getSeparator();
+	private static final String FILES_FOLDER = "files";
 
 	public List<SimpleDocument> getListOfDocuments() {
 		return listOfDocuments;
@@ -37,7 +40,7 @@ public class DocumentsManager {
 
 	public void loadDocumentsFromTextFile() throws IOException {
 
-		File file = new File("files/dokumenty.txt");
+		File file = new File(FILES_FOLDER + FILE_SEPARATOR + "dokumenty.txt");
 		FileReader fileReader = new FileReader(file);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		listOfDocuments.clear();
