@@ -255,15 +255,22 @@ public class FileUtils {
 
 	public static void createSamplePdfFileWithGraphics() {
 
+		String windowsOs = "windows";
+
 		try {
 			Document document = new Document();
 			PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(FILES_FOLDER + FILE_SEPARATOR + "Graphics.pdf")));
 			document.open();
 
+			String os = System.getProperty("os.name").toLowerCase();
+			System.out.println("Used OS: " + os);
+
 			// we create a fontMapper and read all the fonts in the font directory
 			DefaultFontMapper mapper = new DefaultFontMapper();
 			FontFactory.registerDirectories();
-			mapper.insertDirectory("c:" + FILE_SEPARATOR + "windows" + FILE_SEPARATOR + "fonts");
+			if (os.startsWith(windowsOs)) {
+				mapper.insertDirectory("c:" + FILE_SEPARATOR + "windows" + FILE_SEPARATOR + "fonts");
+			}
 
 			// we create a template and a Graphics2D object that corresponds with it
 			float w = 150;
@@ -329,7 +336,12 @@ public class FileUtils {
 			g2.fill(circleArea);
 
 			g2.setColor(Color.black);
-			java.awt.Font thisFont = new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 18);
+			java.awt.Font thisFont;
+			if (os.startsWith(windowsOs)) {
+				thisFont = new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 18);
+			} else {
+				thisFont = new java.awt.Font(java.awt.Font.SANS_SERIF, java.awt.Font.PLAIN, 18);
+			}
 			g2.setFont(thisFont);
 			String pear = "Pear";
 			FontMetrics metrics = g2.getFontMetrics();
