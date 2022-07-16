@@ -15,20 +15,22 @@
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.lowagie/itext -->
+        <!-- https://mvnrepository.com/artifact/com.itextpdf/itextpdf -->
         <dependency>
-            <groupId>com.lowagie</groupId>
-            <artifactId>itext</artifactId>
-            <version>2.1.7</version>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.3</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.10.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -40,7 +42,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Runner</mainClass>
+                            <mainClass>pl.marcinm312.Runner</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
