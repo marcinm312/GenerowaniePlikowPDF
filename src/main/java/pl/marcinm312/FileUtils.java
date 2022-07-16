@@ -294,7 +294,7 @@ public class FileUtils {
 			float h = 150;
 			PdfContentByte cb = writer.getDirectContent();
 			PdfTemplate tp = cb.createTemplate(w, h);
-			Graphics2D g2 = new PdfGraphics2D(cb, w, h, mapper);
+			Graphics2D g2 = new PdfGraphics2D(tp, w, h, mapper);
 			tp.setWidth(w);
 			tp.setHeight(h);
 			double ew = w / 2;
