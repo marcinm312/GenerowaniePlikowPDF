@@ -51,6 +51,7 @@ public class DocumentsManager {
 				}
 			}
 			System.out.println("Documents have been loaded from the file");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

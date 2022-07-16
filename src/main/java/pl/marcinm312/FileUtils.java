@@ -20,6 +20,8 @@ import java.util.List;
 
 public class FileUtils {
 
+	private static final String SUCCESS_RESULT = "File created successfully";
+
 	private FileUtils() {
 
 	}
@@ -35,6 +37,7 @@ public class FileUtils {
 				bufferedWriter.write(simpleDocument.getContent() + "\n");
 			}
 			System.out.println("Documents have been saved to the file");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -102,6 +105,7 @@ public class FileUtils {
 
 			image.setAbsolutePosition(400, 650);
 			document.add(image);
+			System.out.println(SUCCESS_RESULT);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,6 +121,7 @@ public class FileUtils {
 			PdfWriter.getInstance(document, Files.newOutputStream(Paths.get(Constants.FILES_FOLDER + Constants.FILE_SEPARATOR + "HelloWorld1.pdf")));
 			document.open();
 			document.add(new Paragraph("Hello World"));
+			System.out.println(SUCCESS_RESULT);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -138,6 +143,7 @@ public class FileUtils {
 				document.add(new Paragraph(simpleDocument.getContent() + "\n"));
 			}
 			System.out.println("Documents have been saved to the file");
+
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		} finally {
@@ -154,7 +160,8 @@ public class FileUtils {
 			bufferedWriter.write(Constants.DOCUMENT_CONSTANT);
 			bufferedWriter.write(simpleDocument.getTitle() + "\n");
 			bufferedWriter.write(simpleDocument.getContent() + "\n");
-			System.out.println("Document " + i + " have been saved to the file");
+			System.out.println("Document " + i + " have been saved to the TXT file");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -184,6 +191,8 @@ public class FileUtils {
 			document.add(new Paragraph(Constants.DOCUMENT_CONSTANT));
 			document.add(new Paragraph(simpleDocument.getTitle()));
 			document.add(new Paragraph(simpleDocument.getContent()));
+			System.out.println("Document " + i + " have been saved to the PDF file");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -226,6 +235,7 @@ public class FileUtils {
 			document.newPage();
 			document.add(new Paragraph("This PageSize is LETTER."));
 			document.add(new Paragraph("A lot of other standard PageSizes are available."));
+			System.out.println(SUCCESS_RESULT);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -242,6 +252,7 @@ public class FileUtils {
 			document.open();
 			document.add(new Paragraph(
 					"Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor auctor ipsum. Ut et nibh. Praesent facilisis quam non est. Donec massa. In accumsan nunc nec metus pharetra dapibus. In nunc. Quisque commodo, elit id fermentum adipiscing, turpis dui ornare tortor, eu interdum metus nulla vitae dolor. Morbi adipiscing, nibh sed luctus feugiat, libero mi mattis sapien, vel tristique nisl metus id lorem. Cras nunc tellus, tempor quis, ultrices sodales, pretium sit amet, est. Donec rhoncus tempus sapien. Aliquam sagittis feugiat arcu. Aenean pulvinar ultricies nunc. Mauris rhoncus, pede ac dapibus ornare, augue ipsum varius ipsum, ut ornare tellus erat quis est. Aliquam metus tellus, vestibulum quis, porta non, aliquam ut, pede. Phasellus lobortis nulla eget sem. Aliquam bibendum lectus non orci."));
+			System.out.println(SUCCESS_RESULT);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -262,6 +273,7 @@ public class FileUtils {
 			document.addKeywords("iText, Hello World, metadata");
 			document.addCreator("My program using iText");
 			document.add(new Paragraph("Hello World with metadata"));
+			System.out.println(SUCCESS_RESULT);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -366,6 +378,7 @@ public class FileUtils {
 			g2.drawString(pear, (w - width) / 2, 20);
 			g2.dispose();
 			cb.addTemplate(tp, 50, 600);
+			System.out.println(SUCCESS_RESULT);
 
 		} catch (Exception e) {
 			e.printStackTrace();
